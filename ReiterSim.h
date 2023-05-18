@@ -7,7 +7,7 @@
 
 class ReiterSimulation {
     public:
-        ReiterSimulation(size_t width, size_t height) : m_Width(width), m_Height(height) {};
+        ReiterSimulation(int width, int height) : m_Width(width), m_Height(height) {};
 
         virtual double RunSimulation(float alpha, float beta, float gamma) = 0;
 
@@ -16,7 +16,7 @@ class ReiterSimulation {
         void GetNeighbourCellIds(size_t cellId, const std::shared_ptr<size_t> &outIdArray);
         bool CheckReceptiveCell(const std::shared_ptr<float> &data, size_t cellId);
 
-        size_t m_Width, m_Height;
+        int m_Width, m_Height;
 
     private:
         std::string m_OutImgName; 

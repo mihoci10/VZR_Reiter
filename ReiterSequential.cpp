@@ -15,19 +15,21 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
     while(!stable && iter <= MAX_ITER)
     {
         stable = true;
-        for (size_t i = 0; i < m_Height; i++)
+        for (int i = 0; i < m_Height; i++)
         {
-            for (size_t j = 0; j < m_Width; j++)
+            for (int j = 0; j < m_Width; j++)
             {
                 if(i == 0 || j == 0 || m_Height - i == 1 || m_Width - i == 1)
                     continue;
                 
-                size_t cellId = m_Width * i + j;
+                int cellId = m_Width * i + j;
                 GetNeighbourCellIds(cellId, idArray);
                 float sum = 0;
-                for (size_t k = 0; k < 6; k++)
-                    if (!CheckReceptiveCell(prevData, idArray.get()[k]))
-                        sum += prevData.get()[idArray.get()[k]];
+                for (int k = 0; k < 6; k++){
+                    int id = idArray.get()[k];
+                    if (!CheckReceptiveCell(prevData, id))
+                        sum += prevData.get()[id];
+                }
                 
                 float cellR = (CheckReceptiveCell(prevData, cellId) ? 1.0 : 0.0);
                 float cellU = (cellR == 0.0 ? prevData.get()[cellId] : 0.0);
@@ -52,7 +54,7 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
 
 int main(int argc, char** argv){
 
-    ReiterSequential model(50, 50);
+    ReiterSequential model(250, 250);
     auto dur = model.RunSimulation(0.5, 0.5, 0.5);
 
     printf("Execution took %lf seconds\n", dur);

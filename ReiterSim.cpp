@@ -6,7 +6,7 @@ std::shared_ptr<float> ReiterSimulation::CreateGrid(float beta)
 {
     auto data = std::shared_ptr<float>((float*)malloc(m_Width * m_Height * sizeof(float)), free);
     
-    for (size_t i = 0; i < m_Height * m_Width; i++)
+    for (int i = 0; i < m_Height * m_Width; i++)
         data.get()[i] = beta;
 
     data.get()[(m_Height / 2) * m_Width + (m_Width / 2)] = 1;
@@ -38,8 +38,8 @@ bool ReiterSimulation::CheckReceptiveCell(const std::shared_ptr<float> &data, si
     if(data.get()[cellId] >= 1)
         return true;
 
-    size_t j = cellId % m_Width;
-    size_t i = (cellId - j) / m_Width;
+    int j = cellId % m_Width;
+    int i = (cellId - j) / m_Width;
 
     int nOff;
     if (j%2 == 0)
@@ -47,17 +47,17 @@ bool ReiterSimulation::CheckReceptiveCell(const std::shared_ptr<float> &data, si
     else
         nOff = 0;
         
-    if(data.get()[m_Width * (i-1) + j] >= 1)
+    if(i>0 && data.get()[m_Width * (i-1) + j] >= 1)
         return true;
-    if(data.get()[m_Width * (nOff + i) + j - 1] >= 1)
+    if(j>0 && (nOff + i) > 0 && data.get()[m_Width * (nOff + i) + j - 1] >= 1)
         return true;
-    if(data.get()[m_Width * (nOff + i+1) + j - 1] >= 1)
+    if(j>0 && (nOff + i+1) < m_Height && data.get()[m_Width * (nOff + i+1) + j - 1] >= 1)
         return true;
-    if(data.get()[m_Width * (nOff + i) + j + 1] >= 1)
+    if(j+1 < m_Width && (nOff + i) > 0 && data.get()[m_Width * (nOff + i) + j + 1] >= 1)
         return true;
-    if(data.get()[m_Width * (nOff + i+1) + j + 1] >= 1)
+    if(j+1 < m_Width && (nOff + i+1) < m_Height && data.get()[m_Width * (nOff + i+1) + j + 1] >= 1)
         return true;
-    if(data.get()[m_Width * (i+1) + j] >= 1)
+    if(i+1 < m_Height && data.get()[m_Width * (i+1) + j] >= 1)
         return true;
 
     return false;

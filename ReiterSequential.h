@@ -4,7 +4,7 @@
 
 class ReiterSequential : public ReiterSimulation{
     public:
-        ReiterSequential(size_t width, size_t height) : ReiterSimulation(width, height) {};
+        ReiterSequential(int width, int height) : ReiterSimulation(width, height) {};
 
         virtual double RunSimulation(float alpha, float beta, float gamma) override;
 };
