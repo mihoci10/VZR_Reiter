@@ -11,6 +11,8 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
     bool stable = false;
     size_t iter = 0;
 
+    LogState(curData, iter);
+
     auto start = std::chrono::high_resolution_clock::now();
     while(!stable && iter <= MAX_ITER)
     {
@@ -43,6 +45,8 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
 
         curData.swap(prevData);
         iter++;
+        
+        LogState(prevData, iter);
     }
     auto stop = std::chrono::high_resolution_clock::now();
 
@@ -54,7 +58,7 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
 
 int main(int argc, char** argv){
 
-    ReiterSequential model(250, 250);
+    ReiterSequential model(100, 100);
     auto dur = model.RunSimulation(0.5, 0.5, 0.5);
 
     printf("Execution took %lf seconds\n", dur);

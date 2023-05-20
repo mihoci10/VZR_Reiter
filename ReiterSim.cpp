@@ -1,6 +1,11 @@
 #include "ReiterSim.h"
+
+#include "lib/FreeImage.h"
+
 #include <vector>
 #include <cmath>
+#include <iostream>
+#include <fstream>
 
 std::shared_ptr<float> ReiterSimulation::CreateGrid(float beta)
 {
@@ -61,4 +66,83 @@ bool ReiterSimulation::CheckReceptiveCell(const std::shared_ptr<float> &data, si
         return true;
 
     return false;
+}
+
+void ReiterSimulation::LogState(const std::shared_ptr<float> &data, size_t iter)
+{
+    switch (m_DebugMode)
+    {
+        case DebugType::None:
+            return;
+        case DebugType::Txt:
+            SaveStateToTxt(data, std::string(typeid(*this).name()) + std::to_string(iter) + std::string(".txt"));
+            return;
+        case DebugType::Img:
+            SaveStateToImg(data, std::string(typeid(*this).name()) + std::to_string(iter) + std::string(".png"));
+            return;
+        case DebugType::All:
+            SaveStateToTxt(data, std::string(typeid(*this).name()) + std::to_string(iter) + std::string(".txt"));
+            SaveStateToImg(data, std::string(typeid(*this).name()) + std::to_string(iter) + std::string(".png"));
+            return;
+    }
+}
+
+void ReiterSimulation::SaveStateToTxt(const std::shared_ptr<float> &data, const std::string& filename)
+{
+    std::ofstream file(filename);
+
+    for (int i = 0; i < m_Height; i++)
+    {
+        for (int j = 0; j < m_Width; j++)
+        {
+            file << std::to_string(data.get()[i * m_Width + j]);
+            file << "\t";
+        }
+        file << "\n";
+    }
+
+    file.close();
+}
+
+void ReiterSimulation::SaveStateToImg(const std::shared_ptr<float> &data, const std::string& filename)
+{
+    int imgHeight = PIX_PER_CELL * 2 * m_Height + PIX_PER_CELL;
+    int imgWidth = PIX_PER_CELL * m_Width;
+    int imgPitch = ((32 * imgWidth + 31) / 32) * 4;
+
+    unsigned char *imageData = (unsigned char *)malloc(imgHeight * imgWidth * sizeof(unsigned char) * 4);
+
+    for (int i = 0; i < m_Height; i++)
+    {
+        for (int j = 0; j < m_Width; j++)
+        {
+            int nOff;
+            if (j%2 == 0)
+                nOff = 0;
+            else
+                nOff = PIX_PER_CELL;
+
+            int imgI = nOff + (i * PIX_PER_CELL * 2);
+            int imgJ = (j * PIX_PER_CELL);
+
+            float val = data.get()[i * m_Width + j];
+            unsigned char imgVal = (val / 10) * 255;
+
+            for(int x = 0; x < PIX_PER_CELL; x++){
+                for (int y = 0; y < 2 * PIX_PER_CELL; y++){
+                    //zapisemo barvo RGBA (v resnici little endian BGRA)
+                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 0] = 0; //Blue
+                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 1] = 0; // Green
+                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 2] = imgVal; // Red
+                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 3] = 255;   // Alpha
+                }
+            }
+        }
+    }
+
+    FIBITMAP *dst = FreeImage_ConvertFromRawBits(imageData, imgWidth, imgHeight, imgPitch,
+		32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, TRUE);
+	FreeImage_Save(FIF_PNG, dst, filename.c_str(), 0);
+
+    free(imageData);
 }
