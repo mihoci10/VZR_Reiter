@@ -38,7 +38,7 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
 
                 curData.get()[cellId] = prevData.get()[cellId] +  (alpha / 2.0) * ((sum / 6.0) - cellU) + (gamma * cellR);
 
-                stable &= (curData.get()[cellId] < 1.0 || prevData.get()[cellId] >= 1.0);
+                stable &= (sum <= 0);
             }
             
         }
@@ -59,7 +59,7 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
 int main(int argc, char** argv){
 
     ReiterSequential model(100, 100);
-    auto dur = model.RunSimulation(0.5, 0.5, 0.5);
+    auto dur = model.RunSimulation(1, 0.5, 0.01);
 
     printf("Execution took %lf seconds\n", dur);
 

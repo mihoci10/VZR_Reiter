@@ -110,7 +110,7 @@ void ReiterSimulation::SaveStateToImg(const std::shared_ptr<float> &data, const 
     int imgWidth = PIX_PER_CELL * m_Width;
     int imgPitch = ((32 * imgWidth + 31) / 32) * 4;
 
-    unsigned char *imageData = (unsigned char *)malloc(imgHeight * imgWidth * sizeof(unsigned char) * 4);
+    unsigned char *imageData = (unsigned char *)calloc(imgHeight * imgWidth * 4, sizeof(unsigned char));
 
     for (int i = 0; i < m_Height; i++)
     {
@@ -131,9 +131,9 @@ void ReiterSimulation::SaveStateToImg(const std::shared_ptr<float> &data, const 
             for(int x = 0; x < PIX_PER_CELL; x++){
                 for (int y = 0; y < 2 * PIX_PER_CELL; y++){
                     //zapisemo barvo RGBA (v resnici little endian BGRA)
-                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 0] = 0; //Blue
+                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 0] = imgVal; //Blue
                     imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 1] = 0; // Green
-                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 2] = imgVal; // Red
+                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 2] = 0; // Red
                     imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 3] = 255;   // Alpha
                 }
             }
