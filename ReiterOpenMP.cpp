@@ -12,7 +12,7 @@ double ReiterOpenMP::RunSimulation(float alpha, float beta, float gamma)
     bool stable = false;
     size_t iter = 0;
 
-    LogState(curData, iter);
+    LogState(curData.get(), iter);
 
     auto start = std::chrono::high_resolution_clock::now();
     while(!stable && iter <= MAX_ITER)
@@ -27,15 +27,15 @@ double ReiterOpenMP::RunSimulation(float alpha, float beta, float gamma)
             if(i == 0 || j == 0 || m_Height - i == 1 || m_Width - i == 1)
                 continue;
             
-            GetNeighbourCellIds(cellId, idArray);
+            GetNeighbourCellIds(cellId, idArray.get());
             float sum = 0;
             for (int k = 0; k < 6; k++){
                 int id = idArray.get()[k];
-                if (!CheckReceptiveCell(prevData, id))
+                if (!CheckReceptiveCell(prevData.get(), id))
                     sum += prevData.get()[id];
             }
             
-            float cellR = (CheckReceptiveCell(prevData, cellId) ? 1.0 : 0.0);
+            float cellR = (CheckReceptiveCell(prevData.get(), cellId) ? 1.0 : 0.0);
             float cellU = (cellR == 0.0 ? prevData.get()[cellId] : 0.0);
 
             curData.get()[cellId] = prevData.get()[cellId] +  (alpha / 2.0) * ((sum / 6.0) - cellU) + (gamma * cellR);
@@ -47,7 +47,7 @@ double ReiterOpenMP::RunSimulation(float alpha, float beta, float gamma)
         curData.swap(prevData);
         iter++;
         
-        LogState(prevData, iter);
+        LogState(prevData.get(), iter);
     }
     auto stop = std::chrono::high_resolution_clock::now();
 

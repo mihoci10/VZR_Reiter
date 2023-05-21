@@ -19,7 +19,7 @@ std::shared_ptr<float> ReiterSimulation::CreateGrid(float beta)
     return data;
 }
 
-void ReiterSimulation::GetNeighbourCellIds(size_t cellId, const std::shared_ptr<size_t> &outIdArray)
+void ReiterSimulation::GetNeighbourCellIds(size_t cellId, size_t* outIdArray)
 {
     size_t j = cellId % m_Width;
     size_t i = (cellId - j) / m_Width;
@@ -30,17 +30,17 @@ void ReiterSimulation::GetNeighbourCellIds(size_t cellId, const std::shared_ptr<
     else
         nOff = 0;
         
-    outIdArray.get()[0] = m_Width * (i-1) + j;
-    outIdArray.get()[1] = m_Width * (nOff + i) + j - 1;
-    outIdArray.get()[2] = m_Width * (nOff + i+1) + j - 1;
-    outIdArray.get()[3] = m_Width * (nOff + i) + j + 1;
-    outIdArray.get()[4] = m_Width * (nOff + i+1) + j + 1;
-    outIdArray.get()[5] = m_Width * (i+1) + j;
+    outIdArray[0] = m_Width * (i-1) + j;
+    outIdArray[1] = m_Width * (nOff + i) + j - 1;
+    outIdArray[2] = m_Width * (nOff + i+1) + j - 1;
+    outIdArray[3] = m_Width * (nOff + i) + j + 1;
+    outIdArray[4] = m_Width * (nOff + i+1) + j + 1;
+    outIdArray[5] = m_Width * (i+1) + j;
 }
 
-bool ReiterSimulation::CheckReceptiveCell(const std::shared_ptr<float> &data, size_t cellId)
+bool ReiterSimulation::CheckReceptiveCell(float* data, size_t cellId)
 {
-    if(data.get()[cellId] >= 1)
+    if(data[cellId] >= 1)
         return true;
 
     int j = cellId % m_Width;
@@ -52,23 +52,23 @@ bool ReiterSimulation::CheckReceptiveCell(const std::shared_ptr<float> &data, si
     else
         nOff = 0;
         
-    if(i>0 && data.get()[m_Width * (i-1) + j] >= 1)
+    if(i>0 && data[m_Width * (i-1) + j] >= 1)
         return true;
-    if(j>0 && (nOff + i) > 0 && data.get()[m_Width * (nOff + i) + j - 1] >= 1)
+    if(j>0 && (nOff + i) > 0 && data[m_Width * (nOff + i) + j - 1] >= 1)
         return true;
-    if(j>0 && (nOff + i+1) < m_Height && data.get()[m_Width * (nOff + i+1) + j - 1] >= 1)
+    if(j>0 && (nOff + i+1) < m_Height && data[m_Width * (nOff + i+1) + j - 1] >= 1)
         return true;
-    if(j+1 < m_Width && (nOff + i) > 0 && data.get()[m_Width * (nOff + i) + j + 1] >= 1)
+    if(j+1 < m_Width && (nOff + i) > 0 && data[m_Width * (nOff + i) + j + 1] >= 1)
         return true;
-    if(j+1 < m_Width && (nOff + i+1) < m_Height && data.get()[m_Width * (nOff + i+1) + j + 1] >= 1)
+    if(j+1 < m_Width && (nOff + i+1) < m_Height && data[m_Width * (nOff + i+1) + j + 1] >= 1)
         return true;
-    if(i+1 < m_Height && data.get()[m_Width * (i+1) + j] >= 1)
+    if(i+1 < m_Height && data[m_Width * (i+1) + j] >= 1)
         return true;
 
     return false;
 }
 
-void ReiterSimulation::LogState(const std::shared_ptr<float> &data, size_t iter)
+void ReiterSimulation::LogState(float* data, size_t iter)
 {
     switch (m_DebugMode)
     {
@@ -87,7 +87,7 @@ void ReiterSimulation::LogState(const std::shared_ptr<float> &data, size_t iter)
     }
 }
 
-void ReiterSimulation::SaveStateToTxt(const std::shared_ptr<float> &data, const std::string& filename)
+void ReiterSimulation::SaveStateToTxt(float* data, const std::string& filename)
 {
     std::ofstream file(filename);
 
@@ -95,7 +95,7 @@ void ReiterSimulation::SaveStateToTxt(const std::shared_ptr<float> &data, const 
     {
         for (int j = 0; j < m_Width; j++)
         {
-            file << std::to_string(data.get()[i * m_Width + j]);
+            file << std::to_string(data[i * m_Width + j]);
             file << "\t";
         }
         file << "\n";
@@ -104,7 +104,7 @@ void ReiterSimulation::SaveStateToTxt(const std::shared_ptr<float> &data, const 
     file.close();
 }
 
-void ReiterSimulation::SaveStateToImg(const std::shared_ptr<float> &data, const std::string& filename)
+void ReiterSimulation::SaveStateToImg(float* data, const std::string& filename)
 {
     int imgHeight = PIX_PER_CELL * 2 * m_Height + PIX_PER_CELL;
     int imgWidth = PIX_PER_CELL * m_Width;
@@ -125,7 +125,7 @@ void ReiterSimulation::SaveStateToImg(const std::shared_ptr<float> &data, const 
             int imgI = nOff + (i * PIX_PER_CELL * 2);
             int imgJ = (j * PIX_PER_CELL);
 
-            float val = data.get()[i * m_Width + j];
+            float val = data[i * m_Width + j];
             unsigned char imgVal = (val / 10) * 255;
 
             for(int x = 0; x < PIX_PER_CELL; x++){
