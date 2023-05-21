@@ -30,5 +30,5 @@ class ReiterSimulation {
         void SaveStateToTxt(const std::shared_ptr<float> &data, const std::string& filename);
         void SaveStateToImg(const std::shared_ptr<float> &data, const std::string& filename);
 
-        DebugType m_DebugMode = DebugType::Img;
+        DebugType m_DebugMode = DebugType::None;
 };
