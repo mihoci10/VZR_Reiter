@@ -22,7 +22,7 @@ double ReiterOpenMP::RunSimulation(float alpha, float beta, float gamma)
             int j = cellId % m_Width;
             int i = (cellId - j) / m_Width;
 
-            if(i == 0 || j == 0 || m_Height - i == 1 || m_Width - i == 1)
+            if(i == 0 || j == 0 || m_Height - i == 1 || m_Width - j == 1)
                 continue;
             
             GetNeighbourCellIds(cellId, idArray[threadId]);

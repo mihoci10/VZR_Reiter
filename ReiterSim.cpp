@@ -130,6 +130,11 @@ void ReiterSimulation::SaveStateToImg(float* data, const std::string& filename)
 
     unsigned char *imageData = (unsigned char *)calloc(imgHeight * imgWidth * 4, sizeof(unsigned char));
 
+    float maxVal = 0;
+    for(int i = 0; i < m_Width * m_Height; i++)
+        if(data[i] > maxVal)
+            maxVal = data[i];
+
     for (int i = 0; i < m_Height; i++)
     {
         for (int j = 0; j < m_Width; j++)
@@ -144,14 +149,14 @@ void ReiterSimulation::SaveStateToImg(float* data, const std::string& filename)
             int imgJ = (j * PIX_PER_CELL);
 
             float val = data[i * m_Width + j];
-            unsigned char imgVal = (val / 10) * 255;
+            unsigned char imgVal = (val / maxVal) * 255;
 
             for(int x = 0; x < PIX_PER_CELL; x++){
                 for (int y = 0; y < 2 * PIX_PER_CELL; y++){
                     //zapisemo barvo RGBA (v resnici little endian BGRA)
                     imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 0] = imgVal; //Blue
-                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 1] = 0; // Green
-                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 2] = 0; // Red
+                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 1] = imgVal; // Green
+                    imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 2] = imgVal; // Red
                     imageData[4 * (imgI+y)*imgWidth + 4 * (imgJ+x) + 3] = 255;   // Alpha
                 }
             }

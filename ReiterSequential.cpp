@@ -17,7 +17,7 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
         {
             for (int j = 0; j < m_Width; j++)
             {
-                if(i == 0 || j == 0 || m_Height - i == 1 || m_Width - i == 1)
+                if(i == 0 || j == 0 || m_Height - i == 1 || m_Width - j == 1)
                     continue;
                 
                 int cellId = m_Width * i + j;
