@@ -8,29 +8,27 @@ double ReiterOpenMP::RunSimulation(float alpha, float beta, float gamma)
     auto curData = CreateGrid(beta);
     auto prevData = CreateGrid(beta);
 
-    auto idArray = std::shared_ptr<size_t>((size_t*)malloc(6 * sizeof(size_t)), free);
-    bool stable = false;
+    auto numThreads = omp_get_max_threads();
+    size_t idArray[numThreads][6];
     size_t iter = 0;
 
-    LogState(curData.get(), iter);
-
     auto start = std::chrono::high_resolution_clock::now();
-    while(!stable && iter <= MAX_ITER)
+    while(iter <= MAX_ITER)
     {
-        stable = true;
         #pragma omp parallel for
         for (int cellId = 0; cellId < m_Height * m_Width; cellId++)
         {
+            auto threadId = omp_get_thread_num();
             int j = cellId % m_Width;
             int i = (cellId - j) / m_Width;
 
             if(i == 0 || j == 0 || m_Height - i == 1 || m_Width - i == 1)
                 continue;
             
-            GetNeighbourCellIds(cellId, idArray.get());
+            GetNeighbourCellIds(cellId, idArray[threadId]);
             float sum = 0;
             for (int k = 0; k < 6; k++){
-                int id = idArray.get()[k];
+                int id = idArray[threadId][k];
                 if (!CheckReceptiveCell(prevData.get(), id))
                     sum += prevData.get()[id];
             }
@@ -39,9 +37,6 @@ double ReiterOpenMP::RunSimulation(float alpha, float beta, float gamma)
             float cellU = (cellR == 0.0 ? prevData.get()[cellId] : 0.0);
 
             curData.get()[cellId] = prevData.get()[cellId] +  (alpha / 2.0) * ((sum / 6.0) - cellU) + (gamma * cellR);
-
-            if (sum >= 0 && stable)
-                stable = false;
         }
 
         if(m_DebugFreq == DebugFreq::EveryIter)

@@ -102,14 +102,10 @@ double ReiterCUDA::RunSimulation(float alpha, float beta, float gamma)
     cudaMemcpy(curDataDevice, hostGrid.get(), m_Height * m_Width * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(prevDataDevice, hostGrid.get(), m_Height * m_Width * sizeof(float), cudaMemcpyHostToDevice);
 
-    bool stable = false;
     size_t iter = 0;
 
-    LogState(hostGrid.get(), 0);
-    while (!stable && iter <= MAX_ITER)
+    while (iter <= MAX_ITER)
     {
-        stable = true;
-
         int blockSize = 256;
         int gridSize = (m_Height * m_Width + blockSize - 1) / blockSize;
         simulationKernel<<<gridSize, blockSize>>>(curDataDevice, prevDataDevice, m_Height, m_Width, alpha, beta, gamma);
@@ -127,7 +123,6 @@ double ReiterCUDA::RunSimulation(float alpha, float beta, float gamma)
         }
 
         iter++;
-        stable = false;
     }
 
     // Get data from device

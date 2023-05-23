@@ -8,13 +8,11 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
     auto prevData = CreateGrid(beta);
 
     auto idArray = std::shared_ptr<size_t>((size_t*)malloc(6 * sizeof(size_t)), free);
-    bool stable = false;
     size_t iter = 0;
 
     auto start = std::chrono::high_resolution_clock::now();
-    while(!stable && iter <= MAX_ITER)
+    while(iter <= MAX_ITER)
     {
-        stable = true;
         for (int i = 0; i < m_Height; i++)
         {
             for (int j = 0; j < m_Width; j++)
@@ -35,8 +33,6 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
                 float cellU = (cellR == 0.0 ? prevData.get()[cellId] : 0.0);
 
                 curData.get()[cellId] = prevData.get()[cellId] +  (alpha / 2.0) * ((sum / 6.0) - cellU) + (gamma * cellR);
-
-                stable &= (sum <= 0);
             }
             
         }
