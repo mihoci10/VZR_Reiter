@@ -11,8 +11,6 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
     bool stable = false;
     size_t iter = 0;
 
-    LogState(curData.get(), iter);
-
     auto start = std::chrono::high_resolution_clock::now();
     while(!stable && iter <= MAX_ITER)
     {
@@ -42,15 +40,17 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
             }
             
         }
+        
+        if(m_DebugFreq == DebugFreq::EveryIter)
+            LogState(curData.get(), iter);
 
         curData.swap(prevData);
         iter++;
-        
-        LogState(prevData.get(), iter);
     }
-    auto stop = std::chrono::high_resolution_clock::now();
+    if(m_DebugFreq == DebugFreq::Last)
+        LogState(prevData.get(), iter);
 
-    printf("Simulation took %ld iterations\n", iter);
+    auto stop = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     return (duration.count() * 1e-6);

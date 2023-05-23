@@ -44,14 +44,16 @@ double ReiterOpenMP::RunSimulation(float alpha, float beta, float gamma)
                 stable = false;
         }
 
+        if(m_DebugFreq == DebugFreq::EveryIter)
+            LogState(curData.get(), iter);
+
         curData.swap(prevData);
         iter++;
-        
-        LogState(prevData.get(), iter);
     }
-    auto stop = std::chrono::high_resolution_clock::now();
+    if(m_DebugFreq == DebugFreq::Last)
+        LogState(prevData.get(), iter);
 
-    printf("Simulation took %ld iterations\n", iter);
+    auto stop = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     return (duration.count() * 1e-6);

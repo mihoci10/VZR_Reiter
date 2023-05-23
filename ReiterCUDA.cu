@@ -120,16 +120,22 @@ double ReiterCUDA::RunSimulation(float alpha, float beta, float gamma)
         curDataDevice = prevDataDevice;
         prevDataDevice = tmp;
 
+        if(m_DebugFreq == DebugFreq::EveryIter)
+        {
+            cudaMemcpy(hostGrid.get(), curDataDevice, m_Height * m_Width * sizeof(float), cudaMemcpyDeviceToHost);
+            LogState(hostGrid.get(), iter);
+        }
+
         iter++;
         stable = false;
     }
 
     // Get data from device
     cudaMemcpy(hostGrid.get(), curDataDevice, m_Height * m_Width * sizeof(float), cudaMemcpyDeviceToHost);
-    LogState(hostGrid.get(), iter);
+    if(m_DebugFreq == DebugFreq::Last)
+        LogState(hostGrid.get(), iter);
 
     auto stop = std::chrono::high_resolution_clock::now();
-    printf("Simulation took %ld iterations\n", iter);
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
     // Free device memory

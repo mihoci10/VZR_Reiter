@@ -85,6 +85,9 @@ bool ReiterSimulation::CheckReceptiveCell(float* data, size_t cellId)
 
 void ReiterSimulation::LogState(float* data, size_t iter)
 {
+    if (m_DebugFreq == DebugFreq::None)
+        return;
+
     switch (m_DebugMode)
     {
         case DebugType::None:
