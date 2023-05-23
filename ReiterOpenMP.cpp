@@ -59,8 +59,17 @@ double ReiterOpenMP::RunSimulation(float alpha, float beta, float gamma)
 
 int main(int argc, char** argv){
 
-    ReiterOpenMP model(100, 100);
-    auto dur = model.RunSimulation(1, 0.5, 0.01);
+    int width, height;
+    float alpha, beta, gamma;
+
+    if (!ReiterSimulation::ParseInputParams(argc, argv, &width, &height, &alpha, &beta, &gamma))
+    {
+        printf("Correct usage should be: %s <width> <height> <alpha> <beta> <gamma>\n", argv[0]);
+        return -1;
+    }
+
+    ReiterOpenMP model(width, height);
+    auto dur = model.RunSimulation(alpha, beta, gamma);
 
     printf("Ran on %d CPU cores\n", omp_get_max_threads());
     printf("Execution took %lf seconds\n", dur);

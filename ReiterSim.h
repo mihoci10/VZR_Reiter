@@ -17,6 +17,8 @@ class ReiterSimulation {
 
         virtual double RunSimulation(float alpha, float beta, float gamma) = 0;
 
+        static bool ParseInputParams(int argc, char** argv, int* width, int* height, float* alpha, float* beta, float* gamma);
+
     protected:
         std::shared_ptr<float> CreateGrid(float beta);
         void GetNeighbourCellIds(size_t cellId, size_t* outIdArray);
@@ -30,5 +32,5 @@ class ReiterSimulation {
         void SaveStateToTxt(float* data, const std::string& filename);
         void SaveStateToImg(float* data, const std::string& filename);
 
-        DebugType m_DebugMode = DebugType::None;
+        DebugType m_DebugMode = DebugType::Img;
 };

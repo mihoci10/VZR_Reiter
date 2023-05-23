@@ -7,6 +7,21 @@
 #include <iostream>
 #include <fstream>
 
+
+bool ReiterSimulation::ParseInputParams(int argc, char** argv, int* width, int* height, float* alpha, float* beta, float* gamma)
+{
+    if (argc != 6)
+        return false;
+
+    *width = atoi(argv[1]);
+    *height = atoi(argv[2]);
+    *alpha = atof(argv[3]);
+    *beta = atof(argv[4]);
+    *gamma = atof(argv[5]);
+
+    return true;
+}
+
 std::shared_ptr<float> ReiterSimulation::CreateGrid(float beta)
 {
     auto data = std::shared_ptr<float>((float*)malloc(m_Width * m_Height * sizeof(float)), free);
