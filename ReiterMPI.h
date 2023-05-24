@@ -8,5 +8,5 @@ class ReiterMPI : public ReiterSimulation{
 
         virtual double RunSimulation(float alpha, float beta, float gamma) override;
     
-        double Simulation(float alpha, float beta, float gamma, int argc, char** argv);
+        void Simulation(float alpha, float beta, float gamma);
 };
