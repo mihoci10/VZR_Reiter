@@ -11,7 +11,7 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
     size_t iter = 0;
 
     auto start = std::chrono::high_resolution_clock::now();
-    while(iter <= MAX_ITER)
+    while(!IsStable(prevData.get()) && iter <= MAX_ITER)
     {
         for (int i = 0; i < m_Height; i++)
         {

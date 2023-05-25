@@ -13,7 +13,7 @@ double ReiterOpenMP::RunSimulation(float alpha, float beta, float gamma)
     size_t iter = 0;
 
     auto start = std::chrono::high_resolution_clock::now();
-    while(iter <= MAX_ITER)
+    while(!IsStable(prevData.get()) && iter <= MAX_ITER)
     {
         #pragma omp parallel for
         for (int cellId = 0; cellId < m_Height * m_Width; cellId++)

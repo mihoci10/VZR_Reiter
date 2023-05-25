@@ -43,8 +43,8 @@ void ReiterMPI::Simulation(float alpha, float beta, float gamma){
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     std::shared_ptr<float> curData;
-    //if (rank == 0) 
-        curData = CreateGrid(beta);
+    
+    curData = CreateGrid(beta);
     
     int N = m_Width * m_Height;
 	int block_size = N / n_proc + 1;
@@ -63,19 +63,17 @@ void ReiterMPI::Simulation(float alpha, float beta, float gamma){
 		snd_buf_displ[i] = snd_sum;
 		snd_sum += diff;
 
-        rcv_buf_sizes[i] = snd_buf_sizes[i] + min(m_Width + 1, snd_buf_displ[i]) + min(m_Width + 1, N - snd_buf_displ[i] - snd_buf_sizes[i]);
-		rcv_buf_displ[i] = snd_buf_displ[i] - min(m_Width + 1, snd_buf_displ[i]);
+        int rcv_buf_start_pad = min((m_Width + 1) * 2, snd_buf_displ[i]);
+        int rcv_buf_stop_pad = min((m_Width + 1) * 2, N - snd_buf_displ[i] - snd_buf_sizes[i]);
+
+        rcv_buf_sizes[i] = snd_buf_sizes[i] + rcv_buf_start_pad + rcv_buf_stop_pad;
+		rcv_buf_displ[i] = snd_buf_displ[i] - rcv_buf_start_pad;
 	}
 
     int start_cell_id = snd_buf_displ[rank];
-    int stop_cell_id = start_cell_id + snd_buf_sizes[rank];
+    int rcv_buf_start_pad = snd_buf_displ[rank] - rcv_buf_displ[rank];
 
-    int rcv_buf_start_pad = min(m_Width + 1, start_cell_id);
-    int rcv_buf_stop_pad = min(m_Width + 1, N - stop_cell_id);
-
-	int rcv_buf_size = snd_buf_sizes[rank];
-    rcv_buf_size += rcv_buf_start_pad;
-    rcv_buf_size += rcv_buf_stop_pad;
+	int rcv_buf_size = rcv_buf_sizes[rank];
     int snd_buf_size = snd_buf_sizes[rank];
 
 	auto rcv_buf = std::shared_ptr<float>((float*)malloc(rcv_buf_size * sizeof(float)), free);
@@ -125,6 +123,8 @@ void ReiterMPI::Simulation(float alpha, float beta, float gamma){
                     sum += rcv_buf.get()[id];
                 if(rcv_buf.get()[id] >= 1)
                     receptive = true;
+
+                
             }
 
             float cellR = (receptive ? 1.0 : 0.0);

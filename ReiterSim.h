@@ -28,6 +28,7 @@ class ReiterSimulation {
         std::shared_ptr<float> CreateGrid(float beta);
         void GetNeighbourCellIds(size_t cellId, size_t* outIdArray);
         bool CheckReceptiveCell(float* data, size_t cellId);
+        bool IsStable(float* data);
 
         void LogState(float* data, size_t iter);
 

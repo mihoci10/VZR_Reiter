@@ -104,7 +104,7 @@ double ReiterCUDA::RunSimulation(float alpha, float beta, float gamma)
 
     size_t iter = 0;
 
-    while (iter <= MAX_ITER)
+    while (!IsStable(hostGrid.get()) && iter <= MAX_ITER)
     {
         int blockSize = 256;
         int gridSize = (m_Height * m_Width + blockSize - 1) / blockSize;
@@ -116,11 +116,9 @@ double ReiterCUDA::RunSimulation(float alpha, float beta, float gamma)
         curDataDevice = prevDataDevice;
         prevDataDevice = tmp;
 
+        cudaMemcpy(hostGrid.get(), prevDataDevice, m_Height * m_Width * sizeof(float), cudaMemcpyDeviceToHost);
         if(m_DebugFreq == DebugFreq::EveryIter)
-        {
-            cudaMemcpy(hostGrid.get(), curDataDevice, m_Height * m_Width * sizeof(float), cudaMemcpyDeviceToHost);
             LogState(hostGrid.get(), iter);
-        }
 
         iter++;
     }

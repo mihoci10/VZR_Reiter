@@ -34,6 +34,24 @@ std::shared_ptr<float> ReiterSimulation::CreateGrid(float beta)
     return data;
 }
 
+bool ReiterSimulation::IsStable(float* data)
+{
+    for (int i = 1; i < m_Height - 1; i++){
+        if(data[i*m_Width + 1] >= 1)
+            return true;
+        if(data[(i+1)*m_Width - 2] >= 1)
+            return true;
+    }
+
+    for (int i = 1; i < m_Width - 1; i++){
+        if(data[m_Width + i] >= 1)
+            return true;
+        if(data[(m_Height-2)*m_Width + i] >= 1)
+            return true;
+    }
+    return false;
+}
+
 void ReiterSimulation::GetNeighbourCellIds(size_t cellId, size_t* outIdArray)
 {
     size_t j = cellId % m_Width;
