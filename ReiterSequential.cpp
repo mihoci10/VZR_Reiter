@@ -49,6 +49,7 @@ double ReiterSequential::RunSimulation(float alpha, float beta, float gamma)
     auto stop = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
     return (duration.count() * 1e-6);
 }
 
@@ -66,7 +67,7 @@ int main(int argc, char** argv){
     ReiterSequential model(width, height);
     auto dur = model.RunSimulation(alpha, beta, gamma);
 
-    printf("Execution took %lf seconds\n", dur);
+    printf("{type: \"Sequential\", elapsed: %lf, width: %d, height: %d, alpha: %f, beta: %f, gamma: %f},\n", dur, width, height, alpha, beta, gamma);
 
     return 0;
 }

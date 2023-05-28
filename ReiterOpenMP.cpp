@@ -67,9 +67,8 @@ int main(int argc, char** argv){
 
     ReiterOpenMP model(width, height);
     auto dur = model.RunSimulation(alpha, beta, gamma);
-
-    printf("Ran on %d CPU cores\n", omp_get_max_threads());
-    printf("Execution took %lf seconds\n", dur);
+    
+    printf("{type: \"OpenMP\", cores: %d, elapsed: %lf, width: %d, height: %d, alpha: %f, beta: %f, gamma: %f},\n",omp_get_max_threads(), dur, width, height, alpha, beta, gamma);
 
     return 0;
 }
