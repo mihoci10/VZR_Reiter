@@ -152,7 +152,9 @@ int main(int argc, char** argv)
     ReiterCUDA model(width, height);
     auto dur = model.RunSimulation(alpha, beta, gamma);
 
-    printf("{type: \"CUDA\", elapsed: %lf, width: %d, height: %d, alpha: %f, beta: %f, gamma: %f},\n", dur, width, height, alpha, beta, gamma);
+    int deviceCount;
+    cudaGetDeviceCount(&deviceCount);
+    printf("{type: \"CUDA\", n: %d, elapsed: %lf, width: %d, height: %d, alpha: %f, beta: %f, gamma: %f},\n", deviceCount, dur, width, height, alpha, beta, gamma);
 
     return 0;
 }

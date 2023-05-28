@@ -46,32 +46,35 @@ echo "Executing OpenMP... (128 thread)"
 export OMP_NUM_THREADS=128
 srun --cpus-per-task=128 --reservation=fri-vr --partition=gpu out/ReiterOpenMP $2 $3 $4 $5 $6 >> $1
 
-echo "Executing CUDA..."
 
 module load CUDA
 
+echo "Executing CUDA... (1 GPU)"
 srun --reservation=fri-vr --partition=gpu --gpus=1 out/ReiterCUDA $2 $3 $4 $5 $6 >> $1
 
+echo "Executing CUDA... (2 GPUs)"
+srun --reservation=fri-vr --partition=gpu --gpus=2 out/ReiterCUDA $2 $3 $4 $5 $6 >> $1
 
-module load OpenMPI/4.1.1-GCC-11.2.0
+
+module load mpi/openmpi-4.1.3
 
 echo "Executing MPI... (1 runner | 1 node)"
-srun --reservation=fri-vr --partition=gpu --mpi=pmix --ntasks 1 --nodes 1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
+srun --reservation=fri-vr --partition=all --mpi=pmix --ntasks=1 --nodes=1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
 
 echo "Executing MPI... (2 runner | 1 node)"
-srun --reservation=fri-vr --partition=gpu --mpi=pmix --ntasks 2 --nodes 1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
+srun --reservation=fri-vr --partition=all --mpi=pmix --ntasks=2 --nodes=1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
 
 echo "Executing MPI... (4 runner | 1 node)"
-srun --reservation=fri-vr --partition=gpu --mpi=pmix --ntasks 4 --nodes 1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
+srun --reservation=fri-vr --partition=all --mpi=pmix --ntasks=4 --nodes=1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
 
 echo "Executing MPI... (8 runner | 1 node)"
-srun --reservation=fri-vr --partition=gpu --mpi=pmix --ntasks 8 --nodes 1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
+srun --reservation=fri-vr --partition=all --mpi=pmix --ntasks=8 --nodes=1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
 
 echo "Executing MPI... (16 runner | 1 node)"
-srun --reservation=fri-vr --partition=gpu --mpi=pmix --ntasks 16 --nodes 1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
+srun --reservation=fri-vr --partition=all --mpi=pmix --ntasks=16 --nodes=1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
 
 echo "Executing MPI... (32 runner | 1 node)"
-srun --reservation=fri-vr --partition=gpu --mpi=pmix --ntasks 32 --nodes 1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
+srun --reservation=fri-vr --partition=all --mpi=pmix --ntasks=32 --nodes=1 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
 
 echo "Executing MPI... (32 runner | 2 node)"
-srun --reservation=fri-vr --partition=gpu --mpi=pmix --ntasks 32 --nodes 2 out/ReiterMPI $2 $3 $4 $5 $6 >> $1
+srun --reservation=fri-vr --partition=all --mpi=pmix --ntasks=32 --nodes=2 out/ReiterMPI $2 $3 $4 $5 $6 >> $1

@@ -6,7 +6,7 @@ touch $LOG
 
 echo "[" > $LOG
 
-bash run-arnes.sh $LOG 10 10 1 0.5 0.01
+bash run-arnes.sh $LOG 100 100 0.502 0.4 0.0001
 
 echo "]" >> $LOG    
 

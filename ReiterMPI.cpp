@@ -144,6 +144,8 @@ void ReiterMPI::Simulation(float alpha, float beta, float gamma){
     if(rank == 0 && m_DebugFreq == DebugFreq::Last)
         LogState(curData.get(), iter);
 
+    delete[] rcv_buf_sizes;
+    delete[] rcv_buf_displ;
     delete[] snd_buf_sizes;
     delete[] snd_buf_displ;
 }
