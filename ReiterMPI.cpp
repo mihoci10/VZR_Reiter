@@ -171,7 +171,7 @@ int main(int argc, char** argv){
 
     if(rank == 0){
         auto dur = model.RunSimulation(alpha, beta, gamma);
-        printf("{type: \"MPI\", n: %d, elapsed: %lf, width: %d, height: %d, alpha: %f, beta: %f, gamma: %f},\n", n_proc, dur, width, height, alpha, beta, gamma);
+        printf("{\"type\": \"MPI\", \"n\": %d, \"elapsed\": %lf, \"width\": %d, \"height\": %d, \"alpha\": %f, \"beta\": %f, \"gamma\": %f},\n", n_proc, dur, width, height, alpha, beta, gamma);
     }
     else{
         model.Simulation(alpha, beta, gamma);

@@ -154,7 +154,7 @@ int main(int argc, char** argv)
 
     int deviceCount;
     cudaGetDeviceCount(&deviceCount);
-    printf("{type: \"CUDA\", n: %d, elapsed: %lf, width: %d, height: %d, alpha: %f, beta: %f, gamma: %f},\n", deviceCount, dur, width, height, alpha, beta, gamma);
+    printf("{\"type\": \"CUDA\", \"n\": %d, \"elapsed\": %lf, \"width\": %d, \"height\": %d, \"alpha\": %f, \"beta\": %f, \"gamma\": %f},\n", deviceCount, dur, width, height, alpha, beta, gamma);
 
     return 0;
 }

@@ -68,7 +68,7 @@ int main(int argc, char** argv){
     ReiterOpenMP model(width, height);
     auto dur = model.RunSimulation(alpha, beta, gamma);
     
-    printf("{type: \"OpenMP\", n: %d, elapsed: %lf, width: %d, height: %d, alpha: %f, beta: %f, gamma: %f},\n",omp_get_max_threads(), dur, width, height, alpha, beta, gamma);
+    printf("{\"type\": \"OpenMP\", \"n\": %d, \"elapsed\": %lf, \"width\": %d, \"height\": %d, \"alpha\": %f, \"beta\": %f, \"gamma\": %f},\n",omp_get_max_threads(), dur, width, height, alpha, beta, gamma);
 
     return 0;
 }

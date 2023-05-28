@@ -8,7 +8,17 @@ touch $LOG
 
 echo "[" > $LOG
 
+bash run-ijs.sh $LOG 10 10 0.5 0.5 0.5
+bash run-ijs.sh $LOG 10 10 1 0.5 0.01
+bash run-ijs.sh $LOG 10 10 0.502 0.4 0.0001
+
+bash run-ijs.sh $LOG 100 100 0.5 0.5 0.5
+bash run-ijs.sh $LOG 100 100 1 0.5 0.01
 bash run-ijs.sh $LOG 100 100 0.502 0.4 0.0001
+
+bash run-ijs.sh $LOG 300 300 0.5 0.5 0.5
+bash run-ijs.sh $LOG 300 300 1 0.5 0.01
+bash run-ijs.sh $LOG 300 300 0.502 0.4 0.0001
 
 echo "]" >> $LOG    
 

@@ -67,7 +67,7 @@ int main(int argc, char** argv){
     ReiterSequential model(width, height);
     auto dur = model.RunSimulation(alpha, beta, gamma);
 
-    printf("{type: \"Sequential\", elapsed: %lf, width: %d, height: %d, alpha: %f, beta: %f, gamma: %f},\n", dur, width, height, alpha, beta, gamma);
+    printf("{\"type\": \"Sequential\", \"elapsed\": %lf, \"width\": %d, \"height\": %d, \"alpha\": %f, \"beta\": %f, \"gamma\": %f},\n", dur, width, height, alpha, beta, gamma);
 
     return 0;
 }
