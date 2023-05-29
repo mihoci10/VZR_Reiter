@@ -83,8 +83,9 @@ void ReiterMPI::Simulation(float alpha, float beta, float gamma){
     auto idArrayS = std::shared_ptr<int>((int*)malloc(6 * sizeof(int)), free);
 
     size_t iter = 0;
+    bool stable = false;
 
-    while(iter <= MAX_ITER){
+    while(iter <= MAX_ITER && !stable){
 
 	    MPI_Scatterv(curData.get(), rcv_buf_sizes, rcv_buf_displ, MPI_FLOAT, rcv_buf.get(), rcv_buf_size, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
@@ -123,8 +124,6 @@ void ReiterMPI::Simulation(float alpha, float beta, float gamma){
                     sum += rcv_buf.get()[id];
                 if(rcv_buf.get()[id] >= 1)
                     receptive = true;
-
-                
             }
 
             float cellR = (receptive ? 1.0 : 0.0);
@@ -135,8 +134,14 @@ void ReiterMPI::Simulation(float alpha, float beta, float gamma){
 
         MPI_Gatherv(snd_buf.get(), snd_buf_size, MPI_FLOAT, curData.get(), snd_buf_sizes, snd_buf_displ, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
-        if(rank == 0 && m_DebugFreq == DebugFreq::EveryIter)
-            LogState(curData.get(), iter);
+        if(rank == 0){
+            if(m_DebugFreq == DebugFreq::EveryIter)
+                LogState(curData.get(), iter);
+            
+            stable = IsStable(curData.get());
+        }
+
+        MPI_Bcast(&stable, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
 
         iter++;
     }
